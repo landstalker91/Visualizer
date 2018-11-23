@@ -26,6 +26,8 @@ namespace Visualizer.Controllers
             DbContext dbContext = new DbContext(id);
             int fCount = DbReader.FieldCount;
             Console.Write(":");
+        
+            //
 
             return View();
         }
