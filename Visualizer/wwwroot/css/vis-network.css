@@ -1,0 +1,61 @@
+﻿body {
+    font: 10pt sans;
+    background-color: beige;
+}
+
+.inline-panel {
+    width: 100%;
+    height: 90%;
+}
+
+.inline-element {
+    height: 100%;
+    top: 10%;
+    display: inline-block;
+    float: left;
+}
+
+.vis-network {
+    position: relative; 
+    overflow: hidden; 
+    touch-action: pan-y; 
+    user-select: none;
+    -webkit-user-drag: none;
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+    width: 100%;
+    height: 100%;
+}
+
+.vis-canvas {
+    position: relative;
+    touch-action: none;
+    user-select: none;
+    -webkit-user-drag: none;
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+    width: 100%;
+    height: 100%;
+}
+
+.vis-tooltip {
+    left: 0px;
+    top: 0px;
+    visibility: hidden;
+}
+
+#ig_infopanel {
+    height: 100%;
+    margin: 10px;
+    background-color: oldlace;
+}
+
+#ig_canvas {
+    height: 100%;
+    margin: 10px;
+    background-color: oldlace;
+}
+
+#mynetwork {
+    width: 100%;
+    height: 100%;
+    border: 1px solid lightgray;
+}

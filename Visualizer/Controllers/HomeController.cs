@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Visualizer.Models;
+using System.Data.Odbc;
 
 namespace Visualizer.Controllers
 {
@@ -12,25 +13,20 @@ namespace Visualizer.Controllers
     {
         public IActionResult Index()
         {
-            return View();
-        }
 
-        public IActionResult About()
-        {
-            ViewData["Message"] = "Your application description page.";
+            int id = 3864903;
 
-            return View();
-        }
+            OdbcConnection DbConnection = new OdbcConnection("DSN=GAAMDB_64;Server=10.1.8.95;UID=itam;PWD=Qaz12345;Database=GAAMDB;");
+            DbConnection.Open();
+            OdbcCommand DbCommand = DbConnection.CreateCommand();
+            DbCommand.CommandText = "SELECT * FROM amPortfolio";
+            OdbcDataReader DbReader = DbCommand.ExecuteReader();
 
-        public IActionResult Contact()
-        {
-            ViewData["Message"] = "Your contact page.";
 
-            return View();
-        }
+            DbContext dbContext = new DbContext(id);
+            int fCount = DbReader.FieldCount;
+            Console.Write(":");
 
-        public IActionResult Privacy()
-        {
             return View();
         }
 
