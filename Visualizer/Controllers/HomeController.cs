@@ -14,20 +14,8 @@ namespace Visualizer.Controllers
         public IActionResult Index()
         {
 
-            int id = 3864903;
-
-            OdbcConnection DbConnection = new OdbcConnection("DSN=GAAMDB_64;Server=10.1.8.95;UID=itam;PWD=Qaz12345;Database=GAAMDB;");
-            DbConnection.Open();
-            OdbcCommand DbCommand = DbConnection.CreateCommand();
-            DbCommand.CommandText = "SELECT * FROM amPortfolio";
-            OdbcDataReader DbReader = DbCommand.ExecuteReader();
-
-
-            DbContext dbContext = new DbContext(id);
-            int fCount = DbReader.FieldCount;
-            Console.Write(":");
-        
-            //
+            OdbcConnection DbConnection = new OdbcConnection(Settings.CONNECTION_STRING);
+            DataContext dbContext = new DataContext(Settings.ID, DbConnection);
 
             return View();
         }
