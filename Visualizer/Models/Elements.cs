@@ -51,6 +51,9 @@ namespace Visualizer.Models
 
     public class Link
     {
+        public Link()
+        { }
+
         public Link(int id, OdbcConnection DbConnection)
         {
             DbConnection.Open();
@@ -73,8 +76,8 @@ namespace Visualizer.Models
                 {
                     Id = DbReader.GetInt32(0);
                     Weight = DbReader.GetInt32(1) / 100;
-                    SrcNodeId = DbReader.GetInt32(2);
-                    DstNodeId = DbReader.GetInt32(3);
+                    ClientId = DbReader.GetInt32(2);
+                    ResourceId = DbReader.GetInt32(3);
                 }
             }
             else
@@ -86,8 +89,8 @@ namespace Visualizer.Models
         }
 
         public int Id { get; set; }
-        public int SrcNodeId { get; set; }
-        public int DstNodeId { get; set; }
+        public int ClientId { get; set; }
+        public int ResourceId { get; set; }
         public double Weight { get; set; }
 
 

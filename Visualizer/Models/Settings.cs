@@ -12,7 +12,7 @@ namespace Visualizer.Models
     }
     public class Settings
     {
-        public static int ID = 3794990;
+        public static int ID = 3866451;
         public static string CONNECTION_STRING = "DSN=GAAMDB_64;Server=10.1.8.95;UID=itam;PWD=Qaz12345;Database=GAAMDB;";
         public static string NODE_TABLE_NAME = "amPortfolio";
         public static string LINK_TABLE_NAME = "amIgClientResource";

@@ -14,8 +14,15 @@ namespace Visualizer.Controllers
         public IActionResult Index()
         {
 
+            return View();
+        }
+
+        [HttpGet]
+        public IActionResult Graph(int id)
+        {
+
             OdbcConnection DbConnection = new OdbcConnection(Settings.CONNECTION_STRING);
-            DataContext dbContext = new DataContext(Settings.ID, DbConnection);
+            ElementsNetwork network = new ElementsNetwork(id, DbConnection);
 
             return View();
         }

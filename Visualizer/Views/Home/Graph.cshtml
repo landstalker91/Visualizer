@@ -1,0 +1,71 @@
+﻿
+@{
+    Layout = null;
+}
+
+<h2>AMVisualizer</h2>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>Visualizer</title>
+
+    <link href="~/css/vis-network.css" rel="stylesheet" type="text/css">
+    <link href="~/lib/vis-4.21.0/dist/vis-network.min.css" rel="stylesheet" type="text/css">
+    <script src="~/js/renderGraph.js"></script>
+
+</head>
+<body onload="draw();">
+
+    <div class="inline-panel">
+
+        <div id="ig_canvas" class="inline-element" style="width: 68%">
+            <div id="mynetwork">
+                <div class="vis-network" tabindex="900">
+                    <canvas width="1900" class="vis-canvas" height="1900"></canvas>
+                </div>
+                <div class="vis-tooltip">Popup message</div>
+            </div>
+        </div>
+
+        <div id="ig_infopanel" class="inline-element" style="width: 28%">
+
+            <table border="1" id="t">
+                <tr>
+                    <th>id</th>
+                    <th>title</th>
+                </tr>
+                <tr><td id="thiselem"></td><td></td></tr>
+                <tr><td></td><td></td></tr>
+            </table>
+
+            <p>
+                <input type="button" id="btn-UD" value="Up-Down">
+                <input type="button" id="btn-DU" value="Down-Up">
+                <input type="button" id="btn-LR" value="Left-Right">
+                <input type="button" id="btn-RL" value="Right-Left">
+                <input type="hidden" id="direction" value="UD">
+            </p>
+
+            <p id="selection">Selection: 1</p>
+
+            <pre id="eventSpan">
+            
+            <h2>Click event:</h2>{
+                    "test"
+            </pre>
+
+        </div>
+    </div>
+
+    <script type="text/javascript" src="~/js/addDirections.js"></script>
+    <script type="text/javascript" src="~/lib/vis-4.21.0/dist/vis.js"></script>
+
+</body>
+</html>
