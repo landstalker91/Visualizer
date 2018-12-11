@@ -17,7 +17,7 @@ namespace Visualizer.Models
             OdbcCommand DbCommand = DbConnection.CreateCommand();
 
             DbCommand.CommandText = 
-                "SELECT" +
+                "  SELECT" +
                 "  P." + Settings.NODE_PK +
                 ", P.sTGLongName" +
                 ", C.Name" +

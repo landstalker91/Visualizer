@@ -21,7 +21,29 @@
     <script src="~/js/renderGraph.js"></script>
 
 </head>
-<body onload="draw();">
+<body onload="
+    nodes = [];
+    edges = [];
+    var DIR = '/images/';
+
+    @foreach (Node elem in ViewBag.network.Nodes)
+    {
+        <text> nodes.push({ id: @elem.Id, label: '@elem.Name', image: DIR + 'Network-Pipe-icon.png', shape: 'image' }); </text>
+    }
+
+
+
+    @foreach (Link elem in ViewBag.network.Links)
+    {
+        <text> edges.push({ id: @elem.Id, from: @elem.ClientId, to: @elem.ResourceId }); </text>
+    }
+        
+    var data = {
+        nodes: nodes,
+        edges: edges
+    };
+
+    draw(data);">
 
     <div class="inline-panel">
 
@@ -56,9 +78,9 @@
             <p id="selection">Selection: 1</p>
 
             <pre id="eventSpan">
-            
+
             <h2>Click event:</h2>{
-                    "test"
+                @ViewBag.test
             </pre>
 
         </div>
