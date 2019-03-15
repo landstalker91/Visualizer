@@ -13,8 +13,6 @@ function destroy() {
 function draw(data) {
     destroy();
 
-    var connectionCount = [];
-
     // create a network
     var container = document.getElementById('mynetwork');
 
@@ -23,13 +21,17 @@ function draw(data) {
             smooth: {
                 type: 'cubicBezier',
                 forceDirection: (directionInput.value == "UD" || directionInput.value == "DU") ? 'vertical' : 'horizontal',
-                roundness: 0.4
+                roundness: 0.3
             }
         },
 
         layout: {
             hierarchical: {
-                direction: directionInput.value
+                direction: directionInput.value,
+                sortMethod: "directed",
+                nodeSpacing: 250,
+                levelSeparation: 200,
+                enabled: true
             }
         },
         physics: false
@@ -40,10 +42,14 @@ function draw(data) {
     network.on('select', function (params) {
         document.getElementById('selection').innerHTML = 'Selection: ' + params.nodes;
     });
-
+    network.on("doubleClick", function (params) {
+        //params.event = "[original event]";
+        document.location.href = document.location.origin + "/Home/Graph/" + params.nodes;
+        //document.getElementById('eventSpan').innerHTML = '<h2>doubleClick event:</h2>' + JSON.stringify(params, null, 4);
+    });
 
     network.on("click", function (params) {
-        params.event = "[original event]" + test;
+        //params.event = "[original event]" + test;
         //alert('test:' + JSON.stringify(params
         //alert('table:' + document.getElementById('t'));
 
@@ -56,10 +62,18 @@ function draw(data) {
         document.getElementById('eventSpan').innerHTML = '<h2>Click event:</h2>' + JSON.stringify(params, null, 4);
 
     });
-    network.on("doubleClick", function (params) {
-        params.event = "[original event]";
-        document.getElementById('eventSpan').innerHTML = '<h2>doubleClick event:</h2>' + JSON.stringify(params, null, 4);
+    network.on("showPopup", function (params) {
+
+        //var myCell = document.getElementById('thiselem');//указываем элемент в который вставляем данные
+        //myCell.innerHTML = params.nodes[0];
+
+        document.getElementById('eventSpan').innerHTML = '<h2>showPopup event: </h2>' + JSON.stringify(params, null, 4);
     });
+
+
+
+
+    // NOT USED
     network.on("oncontext", function (params) {
         params.event = "[original event]";
         document.getElementById('eventSpan').innerHTML = '<h2>oncontext (right click) event:</h2>' + JSON.stringify(params, null, 4);
@@ -86,13 +100,7 @@ function draw(data) {
         console.log('zoom Event:', params);
         document.getElementById('eventSpan').innerHTML = '<h2>zoom event:</h2>' + JSON.stringify(params, null, 4);
     });
-    network.on("showPopup", function (params) {
-        alert(params);
-        //var myCell = document.getElementById('thiselem');//указываем элемент в который вставляем данные
-        //myCell.innerHTML = params.nodes[0];
 
-        document.getElementById('eventSpan').innerHTML = '<h2>showPopup event: </h2>' + JSON.stringify(params, null, 4);
-    });
     network.on("hidePopup", function () {
         console.log('hidePopup Event');
     });
@@ -125,3 +133,6 @@ function draw(data) {
     });
 }
 
+function setDirection(data) {
+
+}

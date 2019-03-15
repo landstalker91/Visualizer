@@ -21,5 +21,6 @@ namespace Visualizer.Models
         public static string CLIENT_ID_FK = "lClientId";
         public static string RESOURCE_ID_FK = "lResourseId";
         public static string LINK_PERCENT_OF_USE = "PercentOfUse";
+        public static string IMAGE_PATH = "\\wwwroot\\images\\";
     }
 }

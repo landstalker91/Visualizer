@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Data.Odbc;
+using System.Drawing;
+using System.IO;
 
 namespace Visualizer.Models
 {
@@ -33,13 +35,13 @@ namespace Visualizer.Models
             Links.AddRange(parentLinks);
             Links.AddRange(childLinks);
 
-
             int a = 1;
         }
 
         public List<Node> getRelatedNodes(List<Node> elements, Direction direction)
         {
             List<Node> result = new List<Node>();
+            List<int> relatedIds = new List<int>();
             string ids = "";
             string id1 = "";
             string id2 = "";
@@ -65,13 +67,9 @@ namespace Visualizer.Models
             }
 
             DbCommand.CommandText =
-                "SELECT DISTINCT P." +
-                Settings.NODE_PK + ", P.sTGLongName, C.Name FROM " +
-                Settings.NODE_TABLE_NAME + " P INNER JOIN amCaterory C ON (P.ligSubCategoryId = C.lCateroryId) WHERE P." +
-                Settings.NODE_PK +
-                " IN (SELECT DISTINCT CR." + id1 +
+                "SELECT DISTINCT CR." + id1 +
                 " FROM " + Settings.LINK_TABLE_NAME + " CR WHERE CR." +
-                id2 + " IN (" + ids + "))";
+                id2 + " IN (" + ids + ")";
 
             OdbcDataReader DbReader = DbCommand.ExecuteReader();
 
@@ -79,13 +77,7 @@ namespace Visualizer.Models
             {
                 while (DbReader.Read())
                 {
-                    Node node = new Node();
-
-                    node.Id = DbReader.GetInt32(0);
-                    node.Name = DbReader.GetString(1);
-                    node.Category = DbReader.GetString(2);
-
-                    result.Add(node);
+                    relatedIds.Add(DbReader.GetInt32(0));
                 }
             }
             else
@@ -95,6 +87,12 @@ namespace Visualizer.Models
 
             DbReader.Close();
             DbConnection.Close();
+
+            foreach (int id in relatedIds)
+            {
+                Node node = new Node(id, DbConnection);
+                result.Add(node);
+            }
 
             if (result.Count != 0)
             {
@@ -121,13 +119,13 @@ namespace Visualizer.Models
             {
                 while (DbReader.Read())
                 {
-                    Link link = new Link();
-
-                    link.Id = DbReader.GetInt32(0);
-                    link.Weight = DbReader.GetInt32(1) / 100;
-                    link.ClientId = DbReader.GetInt32(2);
-                    link.ResourceId = DbReader.GetInt32(3);
-
+                    Link link = new Link
+                    {
+                        Id = DbReader.GetInt32(0),
+                        Weight = DbReader.GetInt32(1),
+                        ClientId = DbReader.GetInt32(2),
+                        ResourceId = DbReader.GetInt32(3)
+                    };
                     result.Add(link);
                 }
             }
@@ -173,13 +171,13 @@ namespace Visualizer.Models
             {
                 while (DbReader.Read())
                 {
-                    Link link = new Link();
-
-                    link.Id = DbReader.GetInt32(0);
-                    link.Weight = DbReader.GetInt32(1) / 100;
-                    link.ClientId = DbReader.GetInt32(2);
-                    link.ResourceId = DbReader.GetInt32(3);
-
+                    Link link = new Link
+                    {
+                        Id = DbReader.GetInt32(0),
+                        Weight = DbReader.GetInt32(1) / 100,
+                        ClientId = DbReader.GetInt32(2),
+                        ResourceId = DbReader.GetInt32(3)
+                    };
                     result.Add(link);
                 }
             }

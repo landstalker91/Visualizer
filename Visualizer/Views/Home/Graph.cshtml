@@ -28,14 +28,27 @@
 
     @foreach (Node elem in ViewBag.network.Nodes)
     {
-        <text> nodes.push({ id: @elem.Id, label: '@elem.Name', image: DIR + 'Network-Pipe-icon.png', shape: 'image' }); </text>
+        <text> nodes.push(
+            {   id: @elem.Id,
+                label: '@elem.Name',
+                image: DIR + '@elem.ImageName',
+                shape: 'image',
+                widthConstraint: {maximum: 80}
+            }
+      ); </text>
     }
-
-
 
     @foreach (Link elem in ViewBag.network.Links)
     {
-        <text> edges.push({ id: @elem.Id, from: @elem.ClientId, to: @elem.ResourceId }); </text>
+        <text> edges.push(
+            {     id: @elem.Id,
+                  from: @elem.ClientId,
+                  to: @elem.ResourceId,
+                  title:'Используется на ' + @(elem.Weight) + '%',
+                  value:@(elem.Weight),
+                  scaling: {max: 5, min: 1}
+             }
+      ); </text>
     }
         
     var data = {
