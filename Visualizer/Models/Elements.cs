@@ -77,7 +77,7 @@ namespace Visualizer.Models
                     Name = DbReader.GetString(1);
                     Category = DbReader.GetString(2);
 
-                    ImageName = File.Exists(@"" + Directory.GetCurrentDirectory() + Settings.IMAGE_PATH + Category + ".png") ? Category + ".png" : "default.png";
+                    ImageName = File.Exists(@"" + Directory.GetCurrentDirectory() + Settings.IMAGE_PATH + Category + Settings.IMAGE_EXTENSION) ? Category + Settings.IMAGE_EXTENSION : "default" + Settings.IMAGE_EXTENSION;
                     //File.Exists(@"" +  + Category + ".png") ? 
                     //string iconName = File.Exists(@"C:\icons\" + Category + ".png") ? Category : "default";
                     //byte[] buffer = File.ReadAllBytes(@"C:\icons\" + iconName + ".png");
@@ -105,6 +105,8 @@ namespace Visualizer.Models
             }
             DbReader.Close();
             DbConnection.Close();
+
+            LabelColor = Settings.LABEL_DEFAULT_COLOR;
         }
  
         public int Id { get; set; }
@@ -112,6 +114,7 @@ namespace Visualizer.Models
         public string Category { get; set; }
         public Image Img { get; set; }
         public string ImageName { get; set; }
+        public string LabelColor { get; set; }
     }
 
     public class Link
@@ -130,6 +133,7 @@ namespace Visualizer.Models
                 ", CR." + Settings.LINK_PERCENT_OF_USE +
                 ", CR." + Settings.CLIENT_ID_FK +
                 ", CR." + Settings.RESOURCE_ID_FK +
+                ", CR." + Settings.LINK_TYPE +
                 " FROM " + Settings.LINK_TABLE_NAME + " CR " +
                 " WHERE CR." + Settings.LINK_PK + " = " + id.ToString();
 
@@ -143,6 +147,7 @@ namespace Visualizer.Models
                     Weight = DbReader.GetInt32(1);
                     ClientId = DbReader.GetInt32(2);
                     ResourceId = DbReader.GetInt32(3);
+                    Type = DbReader.GetInt32(4) == 0 ? "Расположен на" : "Использует";
                 }
             }
             else
@@ -151,13 +156,16 @@ namespace Visualizer.Models
             }
             DbReader.Close();
             DbConnection.Close();
+
+            Color = Settings.LINK_DEFAULT_COLOR;
         }
 
         public int Id { get; set; }
         public int ClientId { get; set; }
         public int ResourceId { get; set; }
         public double Weight { get; set; }
-
+        public string Color { get; set; }
+        public string Type { get; set; }
 
     }
 }

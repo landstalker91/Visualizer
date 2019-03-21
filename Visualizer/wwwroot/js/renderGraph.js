@@ -10,6 +10,54 @@ function destroy() {
     }
 }
 
+function ajaxGetNode(params) {
+    var retData = null;
+
+    $.ajax({
+        type: 'POST',
+        async: false,
+        url: '/Home/ajaxGetNode/',
+        data: {
+            ID: params.nodes
+        },
+        success: function (data) {
+            // обработка полученных данных
+            // data.returnCode
+            // data.message
+            retData = data;
+        },
+        error: function (error) {
+            alert('Error');
+        },
+        dataType: 'json'
+    });
+    return retData;
+}
+
+function ajaxGetLink(params) {
+    var retData = null;
+
+    $.ajax({
+        type: 'POST',
+        async: false,
+        url: '/Home/ajaxGetLink/',
+        data: {
+            ID: params.edges
+        },
+        success: function (data) {
+            // обработка полученных данных
+            // data.returnCode
+            // data.message
+            retData = data;
+        },
+        error: function (error) {
+            alert('Error');
+        },
+        dataType: 'json'
+    });
+    return retData;
+}
+
 function draw(data) {
     destroy();
 
@@ -24,13 +72,12 @@ function draw(data) {
                 roundness: 0.3
             }
         },
-
         layout: {
             hierarchical: {
                 direction: directionInput.value,
                 sortMethod: "directed",
                 nodeSpacing: 250,
-                levelSeparation: 200,
+                levelSeparation: 250,
                 enabled: true
             }
         },
@@ -40,99 +87,47 @@ function draw(data) {
 
     // add event listeners
     network.on('select', function (params) {
-        document.getElementById('selection').innerHTML = 'Selection: ' + params.nodes;
+        var data = ajaxGetNode(params);
+        var description =
+            '<h2>КЕ: ' + data.id + '</h2><br>' +
+            '<b>Название:</b> ' + data.name + '<br>' +
+            '<b>Категория:</b> ' + data.category + '<br>'
+        $('#node_description').html(description);
+
+        var data = ajaxGetLink(params);
+        var description =
+            '<h2>Связь: ' + data.id + '</h2><br>' +
+            '<b>Вес:</b> ' + data.weight + '<br>' +
+            '<b>Тип:</b> ' + data.type + '<br>'
+        $('#link_description').html(description);
     });
     network.on("doubleClick", function (params) {
         //params.event = "[original event]";
-        document.location.href = document.location.origin + "/Home/Graph/" + params.nodes;
+        document.location.href = document.location.origin + document.location.pathname.substring(0, document.location.pathname.lastIndexOf('/') + 1) + params.nodes;
         //document.getElementById('eventSpan').innerHTML = '<h2>doubleClick event:</h2>' + JSON.stringify(params, null, 4);
     });
-
+    
     network.on("click", function (params) {
-        //params.event = "[original event]" + test;
-        //alert('test:' + JSON.stringify(params
-        //alert('table:' + document.getElementById('t'));
-
-        if (params.nodes == []) {
-            document.getElementById('t').style.display = 'none';
+        if (params.nodes.length == 0) {
+            document.getElementById('node_description').style.display = 'none';
         } else {
-            document.getElementById('t').style.display = 'block';
+            document.getElementById('node_description').style.display = 'block';
         }
 
-        document.getElementById('eventSpan').innerHTML = '<h2>Click event:</h2>' + JSON.stringify(params, null, 4);
+        if (params.edges.length != 1) {
+            document.getElementById('link_description').style.display = 'none';
+        } else {
+            document.getElementById('link_description').style.display = 'block';
+        }
 
+        if (params.edges.length == 0 || params.edges.length == 0) {
+            document.getElementById('ig_infopanel').style.display = 'none';
+        } else {
+            document.getElementById('ig_infopanel').style.display = 'block';
+        }
+        //document.getElementById('eventSpan').innerHTML = '<h2>Click event:</h2>' + JSON.stringify(params, null, 4);
     });
-    network.on("showPopup", function (params) {
-
-        //var myCell = document.getElementById('thiselem');//указываем элемент в который вставляем данные
-        //myCell.innerHTML = params.nodes[0];
-
-        document.getElementById('eventSpan').innerHTML = '<h2>showPopup event: </h2>' + JSON.stringify(params, null, 4);
+    network.on('showPopup', function (params) {
+        //document.getElementById('eventSpan').innerHTML = '<h2>showPopup event: </h2>' + JSON.stringify(params, null, 4);
     });
-
-
-
-
-    // NOT USED
-    network.on("oncontext", function (params) {
-        params.event = "[original event]";
-        document.getElementById('eventSpan').innerHTML = '<h2>oncontext (right click) event:</h2>' + JSON.stringify(params, null, 4);
-    });
-    network.on("dragStart", function (params) {
-        // There's no point in displaying this event on screen, it gets immediately overwritten
-        params.event = "[original event]";
-        console.log('dragStart Event:', params);
-        console.log('dragStart event, getNodeAt returns: ' + this.getNodeAt(params.pointer.DOM));
-    });
-    network.on("dragging", function (params) {
-        params.event = "[original event]";
-        document.getElementById('eventSpan').innerHTML = '<h2>dragging event:</h2>' + JSON.stringify(params, null, 4);
-    });
-    network.on("dragEnd", function (params) {
-        params.event = "[original event]";
-        document.getElementById('eventSpan').innerHTML = '<h2>dragEnd event:</h2>' + JSON.stringify(params, null, 4);
-        console.log('dragEnd Event:', params);
-        console.log('dragEnd event, getNodeAt returns: ' + this.getNodeAt(params.pointer.DOM));
-    });
-    network.on("zoom", function (params) {
-        //var test;
-        //debugger;
-        console.log('zoom Event:', params);
-        document.getElementById('eventSpan').innerHTML = '<h2>zoom event:</h2>' + JSON.stringify(params, null, 4);
-    });
-
-    network.on("hidePopup", function () {
-        console.log('hidePopup Event');
-    });
-    network.on("select", function (params) {
-        console.log('select Event:', params);
-    });
-    network.on("selectNode", function (params) {
-        console.log('selectNode Event:', params);
-    });
-    network.on("selectEdge", function (params) {
-        console.log('selectEdge Event:', params);
-    });
-    network.on("deselectNode", function (params) {
-        console.log('deselectNode Event:', params);
-    });
-    network.on("deselectEdge", function (params) {
-        console.log('deselectEdge Event:', params);
-    });
-    network.on("hoverNode", function (params) {
-        console.log('hoverNode Event:', params);
-    });
-    network.on("hoverEdge", function (params) {
-        console.log('hoverEdge Event:', params);
-    });
-    network.on("blurNode", function (params) {
-        console.log('blurNode Event:', params);
-    });
-    network.on("blurEdge", function (params) {
-        console.log('blurEdge Event:', params);
-    });
-}
-
-function setDirection(data) {
-
 }

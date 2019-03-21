@@ -3,61 +3,80 @@
     Layout = null;
 }
 
-<h2>AMVisualizer</h2>
+<h2>Визуализатор</h2>
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
 
     <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="">
     <meta name="author" content="">
-    <title>Visualizer</title>
+    <title>Визуализатор</title>
+
+    <script type="text/javascript">
+
+    function init() {
+        nodes = [];
+        edges = [];
+        var DIR = '/images/';
+        
+        @foreach (Node elem in ViewBag.network.Nodes)
+        {
+            <text> nodes.push(
+            {
+                id: @elem.Id,
+                label: '@elem.Name',
+                image: DIR + '@elem.ImageName',
+                shape: 'circularImage',
+                widthConstraint: { maximum: 80 },
+                font: { color: '@elem.LabelColor', strokeWidth: 5 },
+                margin: {left: 50}
+            }); </text>
+        }
+
+        @foreach (Link elem in ViewBag.network.Links)
+        {
+            <text> edges.push(
+                    {
+                        id: @elem.Id,
+                        from: @elem.ClientId,
+                        to: @elem.ResourceId,
+                        title: '@(elem.Type + " " + elem.Weight)%',
+                        //label: @(elem.Weight) + '%',
+                        value: @(elem.Weight),
+                        scaling: { max: 5, min: 1 },
+                        color: { color: '@elem.Color' },
+                        font: { vadjust: 20, strokeWidth: 5 },
+                        arrows: {
+                            from: {
+                                    enabled: true,
+                                    type: 'arrow'
+                                   }
+                                }
+                            }
+                ); </text>
+        }
+
+        var data = {
+            nodes: nodes,
+            edges: edges
+        };
+
+        draw(data);
+    }
+    </script>
 
     <link href="~/css/vis-network.css" rel="stylesheet" type="text/css">
     <link href="~/lib/vis-4.21.0/dist/vis-network.min.css" rel="stylesheet" type="text/css">
     <script src="~/js/renderGraph.js"></script>
+    <script type="text/javascript" src="~/lib/vis-4.21.0/dist/vis.js"></script>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
 
 </head>
-<body onload="
-    nodes = [];
-    edges = [];
-    var DIR = '/images/';
-
-    @foreach (Node elem in ViewBag.network.Nodes)
-    {
-        <text> nodes.push(
-            {   id: @elem.Id,
-                label: '@elem.Name',
-                image: DIR + '@elem.ImageName',
-                shape: 'image',
-                widthConstraint: {maximum: 80}
-            }
-      ); </text>
-    }
-
-    @foreach (Link elem in ViewBag.network.Links)
-    {
-        <text> edges.push(
-            {     id: @elem.Id,
-                  from: @elem.ClientId,
-                  to: @elem.ResourceId,
-                  title:'Используется на ' + @(elem.Weight) + '%',
-                  value:@(elem.Weight),
-                  scaling: {max: 5, min: 1}
-             }
-      ); </text>
-    }
-        
-    var data = {
-        nodes: nodes,
-        edges: edges
-    };
-
-    draw(data);">
-
+<body onload="init()">
+    
     <div class="inline-panel">
 
         <div id="ig_canvas" class="inline-element" style="width: 68%">
@@ -67,40 +86,25 @@
                 </div>
                 <div class="vis-tooltip">Popup message</div>
             </div>
+            <div id="buttonspanel">
+                <input type="button" id="btn-UD" value="Сверху вниз">
+                <input type="button" id="btn-DU" value="Снизу вверх">
+                <input type="button" id="btn-LR" value="Слева направо">
+                <input type="button" id="btn-RL" value="Справа налево">
+                <input type="hidden" id="direction" value="UD">
+            </div>
         </div>
 
-        <div id="ig_infopanel" class="inline-element" style="width: 28%">
-
-            <table border="1" id="t">
-                <tr>
-                    <th>id</th>
-                    <th>title</th>
-                </tr>
-                <tr><td id="thiselem"></td><td></td></tr>
-                <tr><td></td><td></td></tr>
-            </table>
-
-            <p>
-                <input type="button" id="btn-UD" value="Up-Down">
-                <input type="button" id="btn-DU" value="Down-Up">
-                <input type="button" id="btn-LR" value="Left-Right">
-                <input type="button" id="btn-RL" value="Right-Left">
-                <input type="hidden" id="direction" value="UD">
-            </p>
-
-            <p id="selection">Selection: 1</p>
-
-            <pre id="eventSpan">
-
-            <h2>Click event:</h2>{
-                @ViewBag.test
-            </pre>
-
+        <div id="ig_infopanel" class="inline-element" style="width: 28%; display: none">
+            <div style="margin-left: 20px; margin-top: 20px;">
+                <div id="node_description"></div>
+                <div id="link_description"></div>
+            </div>
         </div>
     </div>
 
     <script type="text/javascript" src="~/js/addDirections.js"></script>
-    <script type="text/javascript" src="~/lib/vis-4.21.0/dist/vis.js"></script>
+
 
 </body>
 </html>

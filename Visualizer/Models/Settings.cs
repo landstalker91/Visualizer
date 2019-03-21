@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Odbc;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -13,7 +14,16 @@ namespace Visualizer.Models
     public class Settings
     {
         public static int ID = 3866451;
-        public static string CONNECTION_STRING = "DSN=GAAMDB_64;Server=10.1.8.95;UID=itam;PWD=Qaz12345;Database=GAAMDB;";
+        //Connection
+        public static string DSN_NAME = "GAAMDB_64";
+        public static string SERVER = "10.1.8.95";
+        public static string USER = "itam";
+        public static string PWD = "Qaz12345";
+        public static string DATABASE = "GAAMDB";
+        public static string CONNECTION_STRING = "DSN=" + DSN_NAME + ";Server=" + SERVER + ";UID=" + USER + ";PWD=" + PWD + ";Database=" + DATABASE + ";";
+        
+
+        //Tabel query params
         public static string NODE_TABLE_NAME = "amPortfolio";
         public static string LINK_TABLE_NAME = "amIgClientResource";
         public static string NODE_PK = "lPortfolioItemId";
@@ -21,6 +31,16 @@ namespace Visualizer.Models
         public static string CLIENT_ID_FK = "lClientId";
         public static string RESOURCE_ID_FK = "lResourseId";
         public static string LINK_PERCENT_OF_USE = "PercentOfUse";
+        public static string LINK_TYPE = "Type";
+
+        //Environment and main params
         public static string IMAGE_PATH = "\\wwwroot\\images\\";
+        public static string IMAGE_EXTENSION = ".png";
+        public static string LABEL_DEFAULT_COLOR = "#21313B";
+        public static string LABEL_ROOT_COLOR = "#702C1A";
+        public static string LINK_DEFAULT_COLOR = "#B0C6CF";
+        public static string DEFAULT_DIRECTION = "LR";
+
+        
     }
 }

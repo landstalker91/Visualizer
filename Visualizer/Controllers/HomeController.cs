@@ -12,6 +12,7 @@ namespace Visualizer.Controllers
 
     public class HomeController : Controller
     {
+        OdbcConnection DbConnection = new OdbcConnection(Settings.CONNECTION_STRING);
         public IActionResult Index()
         {
             return View();
@@ -20,12 +21,50 @@ namespace Visualizer.Controllers
         public IActionResult Graph(int id)
         {
             if (id != 0) {
-                OdbcConnection DbConnection = new OdbcConnection(Settings.CONNECTION_STRING);
                 ElementsNetwork network = new ElementsNetwork(id, DbConnection);
                 ViewBag.network = network;
                 return View();
             } else {
                 return View("Index");
+            }
+        }
+        [HttpPost]
+        public JsonResult ajaxGetNode(int id)
+        {
+            try
+            {
+                Node node = new Node(id, DbConnection);
+                return Json(new {
+                    returnCode = "Success",
+                    message = "Успешно",
+                    id = node.Id,
+                    name = node.Name,
+                    category = node.Category
+                });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { returnCode = "Server error: " + ex.ToString(), message = "Что-то пошло не так :(\nОбратитесь к администратору" });
+            }
+        }
+        [HttpPost]
+        public JsonResult ajaxGetLink(int id)
+        {
+            try
+            {
+                Link link = new Link(id, DbConnection);
+                return Json(new
+                {
+                    returnCode = "Success",
+                    message = "Успешно",
+                    id = link.Id,
+                    weight = link.Weight,
+                    type = link.Type
+                });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { returnCode = "Server error: " + ex.ToString(), message = "Что-то пошло не так :(\nОбратитесь к администратору" });
             }
         }
 

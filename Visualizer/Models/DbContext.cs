@@ -13,27 +13,29 @@ namespace Visualizer.Models
         public OdbcConnection DbConnection;
         public List<Node> Nodes = new List<Node>();
         public List<Link> Links = new List<Link>();
+        public int RootID;
 
         public ElementsNetwork(int id, OdbcConnection сonnection)
         {
-            List<Node> Node = new List<Node>();
-
             DbConnection = сonnection;
-            Node rootNode = new Node(id, DbConnection);
-
+            RootID = id;
+            Node rootNode = new Node(id, сonnection)
+            {
+                LabelColor = Settings.LABEL_ROOT_COLOR
+            };
             Nodes.Add(rootNode);
 
             List<Node> parentNodes = getRelatedNodes(Nodes, Direction.Parent);
             List<Node> childNodes = getRelatedNodes(Nodes, Direction.Child);
 
-            List<Link> parentLinks = getRelatedLinks(rootNode, Direction.Parent);
-            List<Link> childLinks = getRelatedLinks(rootNode, Direction.Child);
+            List<Link> parentLinks = getRelatedLinksWrapper(Nodes, Direction.Parent);
+            List<Link> childLinks = getRelatedLinksWrapper(Nodes, Direction.Child);
 
-            Nodes.AddRange(parentNodes);
-            Nodes.AddRange(childNodes);
+            Nodes.AddRange(parentNodes.GroupBy(x => x.Id).Select(x => x.First()));
+            Nodes.AddRange(childNodes.GroupBy(x => x.Id).Select(x => x.First()));
 
-            Links.AddRange(parentLinks);
-            Links.AddRange(childLinks);
+            Links.AddRange(parentLinks.GroupBy(x => x.Id).Select(x => x.First()));
+            Links.AddRange(childLinks.GroupBy(x => x.Id).Select(x => x.First()));
 
             int a = 1;
         }
@@ -41,7 +43,9 @@ namespace Visualizer.Models
         public List<Node> getRelatedNodes(List<Node> elements, Direction direction)
         {
             List<Node> result = new List<Node>();
+            //List<Node> recurseResult = new List<Node>();
             List<int> relatedIds = new List<int>();
+            
             string ids = "";
             string id1 = "";
             string id2 = "";
@@ -53,7 +57,6 @@ namespace Visualizer.Models
             {
                 ids += ids == "" ? elem.Id.ToString() : "," + elem.Id.ToString();
             }
-
             switch (direction)
             {
                 case Direction.Parent:
@@ -67,9 +70,9 @@ namespace Visualizer.Models
             }
 
             DbCommand.CommandText =
-                "SELECT DISTINCT CR." + id1 +
-                " FROM " + Settings.LINK_TABLE_NAME + " CR WHERE CR." +
-                id2 + " IN (" + ids + ")";
+                " SELECT DISTINCT CR." + id1 +
+                " FROM " + Settings.LINK_TABLE_NAME + " CR" +
+                " WHERE CR." + id2 + " IN (" + ids + ")";
 
             OdbcDataReader DbReader = DbCommand.ExecuteReader();
 
@@ -91,8 +94,21 @@ namespace Visualizer.Models
             foreach (int id in relatedIds)
             {
                 Node node = new Node(id, DbConnection);
-                result.Add(node);
+                if (!result.Contains(node))
+                {
+                    result.Add(node);
+                }
             }
+
+            /*recurseResult = getRelatedNodes(result, direction);
+
+            foreach (Node elem in recurseResult)
+            {
+                if (!result.Contains(elem))
+                {
+                    result.Add(elem);
+                }
+            }*/
 
             if (result.Count != 0)
             {
@@ -102,68 +118,46 @@ namespace Visualizer.Models
             return result;
         }
 
-        public List<Link> getRelatedLinks(Node element, Direction direction)
+        public List<Link> getRelatedLinksWrapper(List<Node> elements, Direction direction)
         {
-            List<Link> result = new List<Link>();
-
-            DbConnection.Open();
-            OdbcCommand DbCommand = DbConnection.CreateCommand();
-
-            DbCommand.CommandText = "SELECT DISTINCT CR." + Settings.LINK_PK +
-                ", CR." + Settings.LINK_PERCENT_OF_USE + ", CR." + Settings.CLIENT_ID_FK + ", CR." + Settings.RESOURCE_ID_FK +
-                " FROM " + Settings.LINK_TABLE_NAME + " CR WHERE CR." + (direction == Direction.Parent ? Settings.RESOURCE_ID_FK : Settings.CLIENT_ID_FK ) + " = " + element.Id;
-
-            OdbcDataReader DbReader = DbCommand.ExecuteReader();
-
-            if (DbReader.HasRows)
+            string id = "";
+            string ids = "";
+            foreach (Node elem in elements)
             {
-                while (DbReader.Read())
-                {
-                    Link link = new Link
-                    {
-                        Id = DbReader.GetInt32(0),
-                        Weight = DbReader.GetInt32(1),
-                        ClientId = DbReader.GetInt32(2),
-                        ResourceId = DbReader.GetInt32(3)
-                    };
-                    result.Add(link);
-                }
-            }
-            else
-            {
-                Console.WriteLine("No rows found.");
+                id = elem.Id.ToString();
+                ids += ids == "" ? id : "," + id;
             }
 
-            DbReader.Close();
-            DbConnection.Close();
-
-            if (result.Count != 0)
-            {
-                result.AddRange(getRelatedLinks(result, direction));
-            }
-
-            return result;
-
+            return getRelatedLinks(ids, direction);
         }
 
-        public List<Link> getRelatedLinks(List<Link> elements, Direction direction)
+        public List<Link> getRelatedLinksWrapper(List<Link> elements, Direction direction)
         {
-            List<Link> result = new List<Link>();
             string ids = "";
             string id = "";
-
-            DbConnection.Open();
-            OdbcCommand DbCommand = DbConnection.CreateCommand();
-
             foreach (Link elem in elements)
             {
                 id = direction == Direction.Parent ? elem.ClientId.ToString() : elem.ResourceId.ToString();
                 ids += ids == "" ? id : "," + id;
             }
 
-            DbCommand.CommandText = "SELECT DISTINCT CR." + Settings.LINK_PK +
-                ", CR." + Settings.LINK_PERCENT_OF_USE + ", CR." + Settings.CLIENT_ID_FK + ", CR." + Settings.RESOURCE_ID_FK +
-                " FROM " + Settings.LINK_TABLE_NAME + " CR WHERE CR." + (direction == Direction.Parent ? Settings.RESOURCE_ID_FK : Settings.CLIENT_ID_FK) + " IN (" + ids + ")";
+            return getRelatedLinks(ids, direction);
+
+        }
+
+        public List<Link> getRelatedLinks(string ids, Direction direction)
+        {
+            List<Link> result = new List<Link>();
+            List<int> relatedIds = new List<int>();
+
+            DbConnection.Open();
+            OdbcCommand DbCommand = DbConnection.CreateCommand();
+
+            DbCommand.CommandText =
+                " SELECT DISTINCT CR." + Settings.LINK_PK +
+                " FROM " + Settings.LINK_TABLE_NAME + " CR" +
+                " WHERE CR." + (direction == Direction.Parent ? Settings.RESOURCE_ID_FK : Settings.CLIENT_ID_FK) +
+                " IN (" + ids + ")";
 
             OdbcDataReader DbReader = DbCommand.ExecuteReader();
 
@@ -171,14 +165,7 @@ namespace Visualizer.Models
             {
                 while (DbReader.Read())
                 {
-                    Link link = new Link
-                    {
-                        Id = DbReader.GetInt32(0),
-                        Weight = DbReader.GetInt32(1) / 100,
-                        ClientId = DbReader.GetInt32(2),
-                        ResourceId = DbReader.GetInt32(3)
-                    };
-                    result.Add(link);
+                    relatedIds.Add(DbReader.GetInt32(0));
                 }
             }
             else
@@ -189,9 +176,15 @@ namespace Visualizer.Models
             DbReader.Close();
             DbConnection.Close();
 
+            foreach (int id in relatedIds)
+            {
+                Link link = new Link(id, DbConnection);
+                result.Add(link);
+            }
+
             if (result.Count != 0)
             {
-                result.AddRange(getRelatedLinks(result, direction));
+                result.AddRange(getRelatedLinksWrapper(result, direction));
             }
 
             return result;
