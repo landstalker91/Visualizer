@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.WebEncoders;
+using Visualizer.Models;
 
 namespace Visualizer
 {
@@ -38,6 +39,22 @@ namespace Visualizer
             {
                 options.TextEncoderSettings = new TextEncoderSettings(UnicodeRanges.All);
             });
+
+            Settings.CONNECTION_STRING = Configuration.GetConnectionString("DefaultConnection");
+            Settings.NODE_TABLE_NAME = Configuration.GetSection("Node")["Tablename"];
+            Settings.NODE_QUERY = Configuration.GetSection("Node")["Query"];
+            Settings.NODE_LABEL_DEFAULT_COLOR = Configuration.GetSection("Node")["LabelDefaultColor"];
+            Settings.NODE_LABEL_ROOT_COLOR = Configuration.GetSection("Node")["LabelRootColor"];
+            Settings.NODE_PK = Configuration.GetSection("Node")["PK"];
+            Settings.LINK_QUERY = Configuration.GetSection("Link")["Query"];
+            Settings.LINK_TABLE_NAME = Configuration.GetSection("Link")["TableName"];
+            Settings.LINK_DEFAULT_COLOR = Configuration.GetSection("Link")["DefaultColor"];
+            Settings.LINK_PK = Configuration.GetSection("Link")["PK"];
+            Settings.CLIENT_ID = Configuration.GetSection("Link")["ClientId"];
+            Settings.RESOURCE_ID = Configuration.GetSection("Link")["ResourceId"];
+            Settings.IMAGE_PATH = Configuration.GetSection("Parameters")["ImagePath"];
+            Settings.IMAGE_EXTENSION = Configuration.GetSection("Parameters")["ImageExtension"];
+            Settings.LINK_COLORS = Configuration.GetSection("Link")["Colors"].Split(",");
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
         }

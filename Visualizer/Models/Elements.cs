@@ -8,30 +8,15 @@ using System.IO;
 
 namespace Visualizer.Models
 {
-
     public class Node
     {
-
-        public Node()
-        {}
- 
+        public Node() { }
         public Node(int id, OdbcConnection DbConnection)
         {
-            
             DbConnection.Open();
             OdbcCommand DbCommand = DbConnection.CreateCommand();
             
-            DbCommand.CommandText = 
-                "  SELECT" +
-                "  P." + Settings.NODE_PK +
-                ", P.sTGLongName" +
-                ", C.Name" +
-                //", I.blbData" +
-                //", I.lLen" +
-                "  FROM " + Settings.NODE_TABLE_NAME + " P" +
-                "  INNER JOIN amCaterory C ON (P.ligSubCategoryId = C.lCateroryId) " +
-                //"  LEFT JOIN amImage I ON (C.lIconId = I.lImageId) " +
-                "  WHERE P." + Settings.NODE_PK + " = " + id.ToString();
+            DbCommand.CommandText = Settings.NODE_QUERY + id.ToString();
                 
                 /*
             DbCommand.CommandText =
@@ -106,36 +91,26 @@ namespace Visualizer.Models
             DbReader.Close();
             DbConnection.Close();
 
-            LabelColor = Settings.LABEL_DEFAULT_COLOR;
+            LabelColor = Settings.NODE_LABEL_DEFAULT_COLOR;
         }
  
         public int Id { get; set; }
         public string Name { get; set; }
         public string Category { get; set; }
-        public Image Img { get; set; }
+        //public Image Img { get; set; }
         public string ImageName { get; set; }
         public string LabelColor { get; set; }
     }
 
     public class Link
     {
-        public Link()
-        { }
-
+        public Link() { }
         public Link(int id, OdbcConnection DbConnection)
         {
             DbConnection.Open();
             OdbcCommand DbCommand = DbConnection.CreateCommand();
 
-            DbCommand.CommandText =
-                "SELECT" +
-                "  CR." + Settings.LINK_PK +
-                ", CR." + Settings.LINK_PERCENT_OF_USE +
-                ", CR." + Settings.CLIENT_ID_FK +
-                ", CR." + Settings.RESOURCE_ID_FK +
-                ", CR." + Settings.LINK_TYPE +
-                " FROM " + Settings.LINK_TABLE_NAME + " CR " +
-                " WHERE CR." + Settings.LINK_PK + " = " + id.ToString();
+            DbCommand.CommandText = Settings.LINK_QUERY + id.ToString();
 
             OdbcDataReader DbReader = DbCommand.ExecuteReader();
 
@@ -148,6 +123,9 @@ namespace Visualizer.Models
                     ClientId = DbReader.GetInt32(2);
                     ResourceId = DbReader.GetInt32(3);
                     Type = DbReader.GetInt32(4) == 0 ? "Расположен на" : "Использует";
+                    //Color = "#B0C" + Convert.ToString(200 * (1 + DbReader.GetInt32(4)), 16);
+                    //Color = Enum.GetValues(typeof(KnownColor)).GetValue(4 * DbReader.GetInt32(4)).ToString();
+                    Color = Settings.LINK_COLORS[DbReader.GetInt32(4)];
                 }
             }
             else
@@ -157,7 +135,7 @@ namespace Visualizer.Models
             DbReader.Close();
             DbConnection.Close();
 
-            Color = Settings.LINK_DEFAULT_COLOR;
+
         }
 
         public int Id { get; set; }

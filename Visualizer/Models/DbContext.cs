@@ -21,7 +21,7 @@ namespace Visualizer.Models
             RootID = id;
             Node rootNode = new Node(id, сonnection)
             {
-                LabelColor = Settings.LABEL_ROOT_COLOR
+                LabelColor = Settings.NODE_LABEL_ROOT_COLOR
             };
             Nodes.Add(rootNode);
 
@@ -60,12 +60,12 @@ namespace Visualizer.Models
             switch (direction)
             {
                 case Direction.Parent:
-                    id1 = Settings.CLIENT_ID_FK;
-                    id2 = Settings.RESOURCE_ID_FK;
+                    id1 = Settings.CLIENT_ID;
+                    id2 = Settings.RESOURCE_ID;
                     break;
                 case Direction.Child:
-                    id1 = Settings.RESOURCE_ID_FK;
-                    id2 = Settings.CLIENT_ID_FK;
+                    id1 = Settings.RESOURCE_ID;
+                    id2 = Settings.CLIENT_ID;
                     break;
             }
 
@@ -156,7 +156,7 @@ namespace Visualizer.Models
             DbCommand.CommandText =
                 " SELECT DISTINCT CR." + Settings.LINK_PK +
                 " FROM " + Settings.LINK_TABLE_NAME + " CR" +
-                " WHERE CR." + (direction == Direction.Parent ? Settings.RESOURCE_ID_FK : Settings.CLIENT_ID_FK) +
+                " WHERE CR." + (direction == Direction.Parent ? Settings.RESOURCE_ID : Settings.CLIENT_ID) +
                 " IN (" + ids + ")";
 
             OdbcDataReader DbReader = DbCommand.ExecuteReader();
