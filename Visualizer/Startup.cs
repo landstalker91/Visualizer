@@ -40,6 +40,7 @@ namespace Visualizer
                 options.TextEncoderSettings = new TextEncoderSettings(UnicodeRanges.All);
             });
 
+            //Get parameters variables
             Settings.CONNECTION_STRING = Configuration.GetConnectionString("DefaultConnection");
             Settings.NODE_TABLE_NAME = Configuration.GetSection("Node")["Tablename"];
             Settings.NODE_QUERY = Configuration.GetSection("Node")["Query"];
@@ -55,6 +56,7 @@ namespace Visualizer
             Settings.IMAGE_PATH = Configuration.GetSection("Parameters")["ImagePath"];
             Settings.IMAGE_EXTENSION = Configuration.GetSection("Parameters")["ImageExtension"];
             Settings.LINK_COLORS = Configuration.GetSection("Link")["Colors"].Split(",");
+            Settings.LINK_SELECTED_COLOR = Configuration.GetSection("Link")["SelectedColor"];
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
         }

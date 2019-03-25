@@ -28,6 +28,7 @@ namespace Visualizer.Models
         public static string NODE_LABEL_ROOT_COLOR;
         public static string LINK_DEFAULT_COLOR;
         public static string[] LINK_COLORS;
+        public static string LINK_SELECTED_COLOR;
         public static string LINK_PK;
         public static string CLIENT_ID;
         public static string RESOURCE_ID;

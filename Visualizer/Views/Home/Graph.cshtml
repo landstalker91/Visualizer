@@ -3,7 +3,7 @@
     Layout = null;
 }
 
-<h2>Визуализатор</h2>
+<h2></h2>
 
 <!DOCTYPE html>
 <html lang="ru">
@@ -20,7 +20,7 @@
     function init() {
         nodes = [];
         edges = [];
-        var DIR = '/images/';
+        var DIR = @("/" + Settings.IMAGE_PATH + "/");
         
         @foreach (Node elem in ViewBag.network.Nodes)
         {
@@ -29,10 +29,7 @@
                 id: @elem.Id,
                 label: '@elem.Name',
                 image: DIR + '@elem.ImageName',
-                shape: 'circularImage',
-                widthConstraint: { maximum: 80 },
                 font: { color: '@elem.LabelColor', strokeWidth: 5 },
-                margin: {left: 50}
             }); </text>
         }
 
@@ -46,16 +43,8 @@
                         title: '@(elem.Type + " " + elem.Weight)%',
                         //label: @(elem.Weight) + '%',
                         value: @(elem.Weight),
-                        scaling: { max: 5, min: 1 },
-                        color: { color: '@elem.Color' },
-                        font: { vadjust: 20, strokeWidth: 5 },
-                        arrows: {
-                            from: {
-                                    enabled: true,
-                                    type: 'arrow'
-                                   }
-                                }
-                            }
+                        color: { color: '@elem.Color', highlight: '@Settings.LINK_SELECTED_COLOR' }
+                    }
                 ); </text>
         }
 

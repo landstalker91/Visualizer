@@ -39,7 +39,13 @@ namespace Visualizer.Controllers
                     message = "Успешно",
                     id = node.Id,
                     name = node.Name,
-                    category = node.Category
+                    category = node.Category,
+                    subCategory = node.SubCategory,
+                    status = node.Status,
+                    modelShortName = node.ModelShortName,
+                    modelLongName = node.ModelLongName,
+                    cost = node.Cost,
+                    location = node.Location
                 });
             }
             catch (Exception ex)

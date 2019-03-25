@@ -15,43 +15,8 @@ namespace Visualizer.Models
         {
             DbConnection.Open();
             OdbcCommand DbCommand = DbConnection.CreateCommand();
-            
+
             DbCommand.CommandText = Settings.NODE_QUERY + id.ToString();
-                
-                /*
-            DbCommand.CommandText =
-                "  SELECT" +
-                "  P." + Settings.NODE_PK +
-                ", P.sTGLongName" +
-                ", C.Name" +
-                ", ( " +
-                "SELECT " +
-                    "TOP 1 data.blbData " +
-                "FROM " +
-                    "amDocument doc " +
-                "INNER JOIN " +
-                    "amDocBlob data ON(doc.lDocBlobId = data.lDocBlobId) " +
-               " WHERE " +
-                    "lDocObjId = P.lPortfolioItemId " +
-                "AND " +
-                    "doc.FileName LIKE '%.bmp' " +
-                ") as Icon " +
-                ", ( " +
-                "SELECT " +
-                    "TOP 1 data.lLen " +
-                "FROM " +
-                    "amDocument doc " +
-                "INNER JOIN " +
-                    "amDocBlob data ON(doc.lDocBlobId = data.lDocBlobId) " +
-               " WHERE " +
-                    "lDocObjId = P.lPortfolioItemId " +
-                "AND " +
-                    "doc.FileName LIKE '%.bmp' " +
-                ") as Len " +
-                "  FROM " + Settings.NODE_TABLE_NAME + " P " +
-                "  INNER JOIN amCaterory C ON (P.ligSubCategoryId = C.lCateroryId) " +
-                "  WHERE P." + Settings.NODE_PK + " = " + id.ToString();
-                */
             OdbcDataReader DbReader = DbCommand.ExecuteReader();
 
             if (DbReader.HasRows)
@@ -59,10 +24,19 @@ namespace Visualizer.Models
                 while (DbReader.Read())
                 {
                     Id = DbReader.GetInt32(0);
-                    Name = DbReader.GetString(1);
-                    Category = DbReader.GetString(2);
+                    ModelLongName = !DbReader.IsDBNull(1) ? DbReader.GetString(1) : "";
+                    ModelShortName = !DbReader.IsDBNull(2) ? DbReader.GetString(2) : "";
+                    Name = !DbReader.IsDBNull(3) ? DbReader.GetString(3): "";
+                    SubCategory = !DbReader.IsDBNull(4) ? DbReader.GetString(4) : "";
+                    Category = !DbReader.IsDBNull(5) ? DbReader.GetString(5) : "";
+                    Cost = !DbReader.IsDBNull(6) ? DbReader.GetDouble(6) : 0;
+                    Status = !DbReader.IsDBNull(7) ? DbReader.GetString(7) : "";
+                    Location = !DbReader.IsDBNull(8) ? DbReader.GetString(8) : "";
 
-                    ImageName = File.Exists(@"" + Directory.GetCurrentDirectory() + Settings.IMAGE_PATH + Category + Settings.IMAGE_EXTENSION) ? Category + Settings.IMAGE_EXTENSION : "default" + Settings.IMAGE_EXTENSION;
+                    Console.WriteLine(@"" + Directory.GetCurrentDirectory() + "\\wwwroot\\" + Settings.IMAGE_PATH + "\\" + Category + Settings.IMAGE_EXTENSION);
+                    string str = @"" + Directory.GetCurrentDirectory() + "\\wwwroot\\" + Settings.IMAGE_PATH + "\\" + Category + Settings.IMAGE_EXTENSION;
+                    ImageName = File.Exists(@"" + Directory.GetCurrentDirectory() + "\\wwwroot\\" + Settings.IMAGE_PATH + "\\" + Category + Settings.IMAGE_EXTENSION) ? Category + Settings.IMAGE_EXTENSION : "default" + Settings.IMAGE_EXTENSION;
+
                     //File.Exists(@"" +  + Category + ".png") ? 
                     //string iconName = File.Exists(@"C:\icons\" + Category + ".png") ? Category : "default";
                     //byte[] buffer = File.ReadAllBytes(@"C:\icons\" + iconName + ".png");
@@ -97,9 +71,14 @@ namespace Visualizer.Models
         public int Id { get; set; }
         public string Name { get; set; }
         public string Category { get; set; }
-        //public Image Img { get; set; }
+        public string SubCategory { get; set; }
         public string ImageName { get; set; }
         public string LabelColor { get; set; }
+        public string ModelLongName { get; set; }
+        public string ModelShortName { get; set; }
+        public double Cost { get; set; }
+        public string Location { get; set; }
+        public string Status { get; set; }
     }
 
     public class Link
@@ -123,8 +102,6 @@ namespace Visualizer.Models
                     ClientId = DbReader.GetInt32(2);
                     ResourceId = DbReader.GetInt32(3);
                     Type = DbReader.GetInt32(4) == 0 ? "Расположен на" : "Использует";
-                    //Color = "#B0C" + Convert.ToString(200 * (1 + DbReader.GetInt32(4)), 16);
-                    //Color = Enum.GetValues(typeof(KnownColor)).GetValue(4 * DbReader.GetInt32(4)).ToString();
                     Color = Settings.LINK_COLORS[DbReader.GetInt32(4)];
                 }
             }
@@ -134,16 +111,12 @@ namespace Visualizer.Models
             }
             DbReader.Close();
             DbConnection.Close();
-
-
         }
-
         public int Id { get; set; }
         public int ClientId { get; set; }
         public int ResourceId { get; set; }
         public double Weight { get; set; }
         public string Color { get; set; }
         public string Type { get; set; }
-
     }
 }

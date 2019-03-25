@@ -65,12 +65,25 @@ function draw(data) {
     var container = document.getElementById('mynetwork');
 
     var options = {
+        nodes: {
+            margin: { left: 50 },
+            shape: 'circularImage',
+            widthConstraint: { maximum: 80 }
+        },
         edges: {
             smooth: {
                 type: 'cubicBezier',
                 forceDirection: (directionInput.value == "UD" || directionInput.value == "DU") ? 'vertical' : 'horizontal',
                 roundness: 0.3
-            }
+            },
+            arrows: {
+                from: {
+                    enabled: true,
+                    type: 'arrow'
+                }
+            },
+            scaling: { max: 5, min: 1 },
+            font: { vadjust: 20, strokeWidth: 5 }
         },
         layout: {
             hierarchical: {
@@ -89,10 +102,16 @@ function draw(data) {
     network.on('select', function (params) {
         var data = ajaxGetNode(params);
         var description =
-            '<h2>КЕ: ' + data.id + '</h2><br>' +
+            '<font face="Calibri"><h2>' + data.modelLongName + '</h2><br>' +
             '<b>Название:</b> ' + data.name + '<br>' +
-            '<b>Категория:</b> ' + data.category + '<br>'
-        $('#node_description').html(description);
+            '<b>ID</b>: ' + data.id + '<br>' +
+            (data.modelShortName ? ('<b>Модель (краткое):</b> ' + data.modelShortName + '<br>') : "") + 
+            (data.subCategory ? ('<b>Подкатегория:</b> ' + data.subCategory + '<br>') : "") +
+            (data.category ? ('<b>Категория:</b> ' + data.category + '<br>') : "") +
+            (data.status ? ('<b>Статус:</b> ' + data.status + '<br>') : "") +
+            (data.cost != 0 ? ('<b>Стоимость:</b> ' + data.cost + '<br>') : "") +
+            (data.location ? ('<b>Местоположение:</b> ' + data.location + '<br></font>') : "");
+            $('#node_description').html(description);
 
         var data = ajaxGetLink(params);
         var description =
@@ -101,10 +120,11 @@ function draw(data) {
             '<b>Тип:</b> ' + data.type + '<br>'
         $('#link_description').html(description);
     });
+
     network.on("doubleClick", function (params) {
-        //params.event = "[original event]";
-        document.location.href = document.location.origin + document.location.pathname.substring(0, document.location.pathname.lastIndexOf('/') + 1) + params.nodes;
-        //document.getElementById('eventSpan').innerHTML = '<h2>doubleClick event:</h2>' + JSON.stringify(params, null, 4);
+        if (params.nodes.length != 0) {
+            document.location.href = document.location.origin + document.location.pathname.substring(0, document.location.pathname.lastIndexOf('/') + 1) + params.nodes;
+        }
     });
     
     network.on("click", function (params) {
