@@ -17,27 +17,27 @@ namespace Visualizer.Models
 
         public ElementsNetwork(int id, OdbcConnection сonnection)
         {
-            DbConnection = сonnection;
-            RootID = id;
-            Node rootNode = new Node(id, сonnection)
-            {
-                LabelColor = Settings.NODE_LABEL_ROOT_COLOR
-            };
-            Nodes.Add(rootNode);
 
-            List<Node> parentNodes = getRelatedNodes(Nodes, Direction.Parent);
-            List<Node> childNodes = getRelatedNodes(Nodes, Direction.Child);
+                DbConnection = сonnection;
+                RootID = id;
+                Node rootNode = new Node(id, сonnection)
+                {
+                    LabelColor = Settings.NODE_LABEL_ROOT_COLOR
+                };
+                Nodes.Add(rootNode);
 
-            List<Link> parentLinks = getRelatedLinksWrapper(Nodes, Direction.Parent);
-            List<Link> childLinks = getRelatedLinksWrapper(Nodes, Direction.Child);
+                List<Node> parentNodes = getRelatedNodes(Nodes, Direction.Parent);
+                List<Node> childNodes = getRelatedNodes(Nodes, Direction.Child);
 
-            Nodes.AddRange(parentNodes.GroupBy(x => x.Id).Select(x => x.First()));
-            Nodes.AddRange(childNodes.GroupBy(x => x.Id).Select(x => x.First()));
+                List<Link> parentLinks = getRelatedLinksWrapper(Nodes, Direction.Parent);
+                List<Link> childLinks = getRelatedLinksWrapper(Nodes, Direction.Child);
 
-            Links.AddRange(parentLinks.GroupBy(x => x.Id).Select(x => x.First()));
-            Links.AddRange(childLinks.GroupBy(x => x.Id).Select(x => x.First()));
+                Nodes.AddRange(parentNodes.GroupBy(x => x.Id).Select(x => x.First()));
+                Nodes.AddRange(childNodes.GroupBy(x => x.Id).Select(x => x.First()));
 
-            int a = 1;
+                Links.AddRange(parentLinks.GroupBy(x => x.Id).Select(x => x.First()));
+                Links.AddRange(childLinks.GroupBy(x => x.Id).Select(x => x.First()));
+
         }
 
         public List<Node> getRelatedNodes(List<Node> elements, Direction direction)

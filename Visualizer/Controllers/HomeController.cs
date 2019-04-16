@@ -21,8 +21,17 @@ namespace Visualizer.Controllers
         public IActionResult Graph(int id)
         {
             if (id != 0) {
-                ElementsNetwork network = new ElementsNetwork(id, DbConnection);
-                ViewBag.network = network;
+            try
+                {
+                    ElementsNetwork network = new ElementsNetwork(id, DbConnection);
+                    ViewBag.network = network;
+                }
+            catch (Exception ex)
+                {
+                    ViewBag.Error = ex.ToString();
+                    return View("Error");
+                }
+
                 return View();
             } else {
                 return View("Index");

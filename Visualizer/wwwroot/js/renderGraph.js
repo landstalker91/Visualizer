@@ -126,7 +126,7 @@ function draw(data) {
             document.location.href = document.location.origin + document.location.pathname.substring(0, document.location.pathname.lastIndexOf('/') + 1) + params.nodes;
         }
     });
-    
+
     network.on("click", function (params) {
         if (params.nodes.length == 0) {
             document.getElementById('node_description').style.display = 'none';
@@ -150,4 +150,7 @@ function draw(data) {
     network.on('showPopup', function (params) {
         //document.getElementById('eventSpan').innerHTML = '<h2>showPopup event: </h2>' + JSON.stringify(params, null, 4);
     });
+
+
+
 }

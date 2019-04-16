@@ -5,6 +5,10 @@
     <UserSecretsId>72f4c572-4cbc-4472-9967-48812fa40d51</UserSecretsId>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+  </PropertyGroup>
+
   <ItemGroup>
     <None Include="wwwroot\lib\vis-4.21.0\.github\ISSUE_TEMPLATE.md" />
     <None Include="wwwroot\lib\vis-4.21.0\.github\PULL_REQUEST_TEMPLATE.md" />
