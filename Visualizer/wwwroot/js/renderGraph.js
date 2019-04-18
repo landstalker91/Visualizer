@@ -1,4 +1,5 @@
-﻿var nodes = null;
+﻿
+var nodes = null;
 var edges = null;
 var network = null;
 var directionInput = document.getElementById("direction");
@@ -10,7 +11,7 @@ function destroy() {
     }
 }
 
-function ajaxGetNode(params) {
+function ajaxGetNode(id) {
     var retData = null;
 
     $.ajax({
@@ -18,7 +19,7 @@ function ajaxGetNode(params) {
         async: false,
         url: '/Home/ajaxGetNode/',
         data: {
-            ID: params.nodes
+            ID: id
         },
         success: function (data) {
             // обработка полученных данных
@@ -34,7 +35,7 @@ function ajaxGetNode(params) {
     return retData;
 }
 
-function ajaxGetLink(params) {
+function ajaxGetLink(id) {
     var retData = null;
 
     $.ajax({
@@ -42,7 +43,7 @@ function ajaxGetLink(params) {
         async: false,
         url: '/Home/ajaxGetLink/',
         data: {
-            ID: params.edges
+            ID: id
         },
         success: function (data) {
             // обработка полученных данных
@@ -68,11 +69,14 @@ function draw(data) {
         nodes: {
             margin: { left: 50 },
             shape: 'circularImage',
-            widthConstraint: { maximum: 80 }
+            widthConstraint: { maximum: 80 },
+            shadow: {
+                enabled: true
+            }
         },
         edges: {
             smooth: {
-                type: 'cubicBezier',
+                type: 'continuous',
                 forceDirection: (directionInput.value == "UD" || directionInput.value == "DU") ? 'vertical' : 'horizontal',
                 roundness: 0.3
             },
@@ -100,26 +104,48 @@ function draw(data) {
 
     // add event listeners
     network.on('select', function (params) {
-        var data = ajaxGetNode(params);
+        var linkInfo = "";
+        var linkColor = "";
+        var data = ajaxGetNode(params.nodes[0]);
         var description =
-            '<font face="Calibri"><h2>' + data.modelLongName + '</h2><br>' +
+            '<font face="Calibri"><br><font color="#1E90FF" size="4"><b>' + data.modelLongName + '</b></font><br>' +
             '<b>Название:</b> ' + data.name + '<br>' +
             '<b>ID</b>: ' + data.id + '<br>' +
-            (data.modelShortName ? ('<b>Модель (краткое):</b> ' + data.modelShortName + '<br>') : "") + 
+            (data.modelShortName ? ('<b>Модель (краткое):</b> ' + data.modelShortName + '<br>') : "") +
             (data.subCategory ? ('<b>Подкатегория:</b> ' + data.subCategory + '<br>') : "") +
             (data.category ? ('<b>Категория:</b> ' + data.category + '<br>') : "") +
             (data.status ? ('<b>Статус:</b> ' + data.status + '<br>') : "") +
             (data.cost != 0 ? ('<b>Стоимость:</b> ' + data.cost + '<br>') : "") +
             (data.location ? ('<b>Местоположение:</b> ' + data.location + '<br></font>') : "");
-            $('#node_description').html(description);
+        $('#node_description').html(description);
 
-        var data = ajaxGetLink(params);
-        var description =
-            '<h2>Связь: ' + data.id + '</h2><br>' +
-            '<b>Вес:</b> ' + data.weight + '<br>' +
-            '<b>Тип:</b> ' + data.type + '<br>'
-        $('#link_description').html(description);
+        description = "";
+        if (params.edges.length != 0) {
+            if (typeof params.edges == 'object') {
+                params.edges.forEach(function (element) {
+                    data = ajaxGetLink(element);
+                    if (data.clientId == params.nodes[0]) {
+                        linkColor = "#54CFB7";
+                        linkInfo = "Связь с ресурсом " + ajaxGetNode(data.resourceId).modelShortName;
+                    } else if (data.resourceId == params.nodes[0]) {
+                        linkColor = "#8DC8DD";
+                        linkInfo = "Связь с клиентом " + ajaxGetNode(data.clientId).modelShortName;
+                    } else {
+                        linkColor = "#1E90FF";
+                        linkInfo = "Связь между " + ajaxGetNode(data.resourceId).modelShortName + " и " + ajaxGetNode(data.clientId).modelShortName;
+                    }
+                     
+                    description +=
+                        '<br><b><font face="Calibri"><font color="' + linkColor + '" size="3">' + linkInfo + '</font></b><br>' +
+                        '<b>Вес:</b> ' + data.weight + '%<br>' +
+                        '<b>Тип:</b><font color="' + data.color + '"> ' + data.type + '</font><br></font>';
+                });
+                $('#link_description').html(description);
+            }
+        }
     });
+
+    
 
     network.on("doubleClick", function (params) {
         if (params.nodes.length != 0) {
@@ -134,7 +160,7 @@ function draw(data) {
             document.getElementById('node_description').style.display = 'block';
         }
 
-        if (params.edges.length != 1) {
+        if (params.edges.length == 0) {
             document.getElementById('link_description').style.display = 'none';
         } else {
             document.getElementById('link_description').style.display = 'block';
@@ -150,7 +176,4 @@ function draw(data) {
     network.on('showPopup', function (params) {
         //document.getElementById('eventSpan').innerHTML = '<h2>showPopup event: </h2>' + JSON.stringify(params, null, 4);
     });
-
-
-
 }

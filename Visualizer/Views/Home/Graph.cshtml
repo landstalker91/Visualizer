@@ -43,7 +43,8 @@
                         title: '@(elem.Type + " " + elem.Weight)%',
                         //label: @(elem.Weight) + '%',
                         value: @(elem.Weight),
-                        color: { color: '@elem.Color', highlight: '@Settings.LINK_SELECTED_COLOR' }
+                        color: { color: '@elem.Color', highlight: '@Settings.LINK_SELECTED_COLOR' },
+                        dashes: [10, 10]
                     }
                 ); </text>
         }
@@ -85,7 +86,7 @@
         </div>
 
         <div id="ig_infopanel" class="inline-element" style="width: 28%; display: none">
-            <div style="margin-left: 20px; margin-top: 20px;">
+            <div id="description">
                 <div id="node_description"></div>
                 <div id="link_description"></div>
             </div>

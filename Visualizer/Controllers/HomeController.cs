@@ -74,7 +74,10 @@ namespace Visualizer.Controllers
                     message = "Успешно",
                     id = link.Id,
                     weight = link.Weight,
-                    type = link.Type
+                    type = link.Type,
+                    color = link.Color,
+                    clientId = link.ClientId,
+                    resourceId = link.ResourceId
                 });
             }
             catch (Exception ex)

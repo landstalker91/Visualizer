@@ -20,8 +20,3 @@ btnRL.onclick = function () {
     directionInput.value = "RL";
     init();
 };
-
-var btnOpenInAM = document.getElementById("btn-openInAM");
-btnOpenInAM.onclick = function (params) {
-    ajaxOpenNodeInAM(35052293);
-};
