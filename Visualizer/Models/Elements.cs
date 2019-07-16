@@ -102,7 +102,22 @@ namespace Visualizer.Models
                     Weight = DbReader.GetInt32(1);
                     ClientId = DbReader.GetInt32(2);
                     ResourceId = DbReader.GetInt32(3);
-                    Type = DbReader.GetInt32(4) == 0 ? "Расположен на" : "Использует";
+ 
+                    switch (DbReader.GetInt32(4))
+                    {
+                        case 0:
+                            Type = "Расположен на";
+                            break;
+                        case 1:
+                            Type = "Использует";
+                            break;
+                        case 2:
+                            Type = "Встроен в";
+                            break;
+                        default:
+                            Type = "Связан с";
+                            break;
+                    }
                     Color = Settings.LINK_COLORS[DbReader.GetInt32(4)];
                 }
             }
