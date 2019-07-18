@@ -1,5 +1,5 @@
 ﻿body {
-    font: 10pt sans;
+    font: 12pt sans;
     background-color: #DBEDFA;
 }
 
@@ -42,6 +42,15 @@
     visibility: hidden;
 }
 
+.inp-1 {
+    width: 90%;
+    border-radius: 5px;
+}
+
+.lab-1 {
+    width: 100%;
+}
+
 #ig_infopanel {
     height: 100%;
     margin: 10px;
@@ -76,4 +85,100 @@
     overflow: auto;
     height: 100%;
     margin-left: 20px;
+}
+
+/* скрываем чекбоксы и блоки с содержанием */
+.hideNode, .hideLink,
+.hideLink + label ~ div {
+    display: none;
+}
+
+/* вид текста label */
+.hideNode + label, .hideLink + label {
+    margin: 0;
+    padding: 0;
+    cursor: pointer;
+    display: inline-block;
+}
+
+.hideLink + label {
+    color: #788d96;
+}
+
+.hideNode + label {
+    color: #1E90FF;
+}
+
+/* вид текста label при активном переключателе */
+.hideLink:checked + label {
+    color: red;
+    border-bottom: 0;
+}
+
+/* когда чекбокс активен показываем блоки с содержанием  */
+.hideNode + label + div, .hideLink:checked + label + div {
+    display: block;
+    background: #fafafa;
+    /*-moz-box-shadow: inset 3px 3px 10px #7d8e8f;*/
+    -webkit-box-shadow: inset 0px 0px 6px #1E90FF;
+    /*box-shadow: inset 3px 3px 10px #7d8e8f;*/
+    margin-left: 0px;
+    padding: 10px;
+    /* чуточку анимации при появлении */
+    -webkit-animation: fade ease-in 0.5s;
+    -moz-animation: fade ease-in 0.5s;
+    animation: fade ease-in 0.5s;
+}
+
+.hideLink + label:before {
+    background-color: #1e90ff;
+    color: #fff;
+    content: "\002B";
+    display: block;
+    float: left;
+    font-size: 14px;
+    font-weight: bold;
+    height: 16px;
+    line-height: 16px;
+    margin: 20px 3px;
+    text-align: center;
+    width: 16px;
+    -webkit-border-radius: 50%;
+    -moz-border-radius: 50%;
+    border-radius: 50%;
+}
+
+    .hideLink:checked + label:before {
+        content: "\2212";
+    }
+
+/* анимация при появлении скрытых блоков */
+@-moz-keyframes fade {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1
+    }
+}
+
+@-webkit-keyframes fade {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1
+    }
+}
+
+@keyframes fade {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1
+    }
 }

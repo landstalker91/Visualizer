@@ -108,7 +108,11 @@ function draw(data) {
         var linkColor = "";
         var data = ajaxGetNode(params.nodes[0]);
         var description =
-            '<font face="Calibri"><br><font color="#1E90FF" size="4"><b>' + data.modelLongName + '</b></font><br>' +
+            '<input class="hideNode" id="hd-' + data.id + '" type="checkbox">' +
+            '<label class="lab-1" for="hd-' + data.id + '" >' +
+            '<font face="Calibri"><br><font size="5"><u><b>' + data.modelLongName + '</b></u></font><br>' +
+            '</label>' +
+            '<div class="inp-1">' +
             '<b>Название:</b> ' + data.name + '<br>' +
             '<b>ID</b>: ' + data.id + '<br>' +
             (data.modelShortName ? ('<b>Модель (краткое):</b> ' + data.modelShortName + '<br>') : "") +
@@ -116,8 +120,9 @@ function draw(data) {
             (data.category ? ('<b>Категория:</b> ' + data.category + '<br>') : "") +
             (data.status ? ('<b>Статус:</b> ' + data.status + '<br>') : "") +
             (data.cost != 0 ? ('<b>Стоимость:</b> ' + data.cost + '<br>') : "") +
-            (data.location ? ('<b>Местоположение:</b> ' + data.location + '<br></font>') : "");
-        $('#node_description').html(description);
+            (data.location ? ('<b>Местоположение:</b> ' + data.location + '<br></font>') : "") +
+            '</div><br/>';
+              $('#node_description').html(description);
 
         description = "";
         if (params.edges.length != 0) {
@@ -136,9 +141,14 @@ function draw(data) {
                     }
                      
                     description +=
-                        '<br><b><font face="Calibri"><font color="' + linkColor + '" size="3">' + linkInfo + '</font></b><br>' +
+                        '<input class="hideLink" id="hd-' + data.id + '" type="checkbox">' +
+                        '<label class="lab-1" for="hd-' + data.id + '">' +
+                        '<br><b><u><font face="Calibri"><font size="4">' + linkInfo + '</font></b></u><br>' +
+                        '</label>' +
+                        '<div class="inp-1">' +
                         '<b>Вес:</b> ' + data.weight + '%<br>' +
-                        '<b>Тип:</b><font color="' + data.color + '"> ' + data.type + '</font><br></font>';
+                        '<b>Тип:</b> ' + data.type + '<font color="' + data.color + '"> •</font>  <br></font>' +
+                        '</div>';
                 });
                 $('#link_description').html(description);
             }
