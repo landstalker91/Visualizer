@@ -107,22 +107,29 @@ function draw(data) {
     network.on('select', function (params) {
         var linkInfo = '';
         var link = {};
-        var node = ajaxGetNode(params.nodes[0]);
-        var description =
+        var description = '';
+  
+        if (params.nodes.length != 0) {
 
-            '<div class="infoHeader">' + node.modelLongName + '<br></div>' +
-            '<div class="inp-1">' +
-            '<b>Ид:</b> <a href="' + document.location.origin + document.location.pathname.substring(0, document.location.pathname.lastIndexOf('/') + 1) + node.id + '" class="renderLink">' + node.id + '</a>' + '<br>' +
-            '<b>Название:</b> ' + node.name + '<br>' +
-            (node.modelShortName ? ('<b>Модель (краткое):</b> ' + node.modelShortName + '<br>') : "") +
-            (node.subCategory ? ('<b>Подкатегория:</b> ' + node.subCategory + '<br>') : "") +
-            (node.category ? ('<b>Категория:</b> ' + node.category + '<br>') : "") +
-            (node.status ? ('<b>Статус:</b> ' + node.status + '<br>') : "") +
-            (node.cost != 0 ? ('<b>Стоимость:</b> ' + node.cost + '<br>') : "") +
-            (node.location ? ('<b>Местоположение:</b> ' + node.location + '<br></font>') : "") +
-            '</div><br/>';
+            var node = ajaxGetNode(params.nodes[0]);
+            description =
 
-        $('#node_description').html(description);
+                '<div class="infoHeader">' + node.modelLongName + '<br></div>' +
+                '<div class="inp-1">' +
+                '<b>Ид:</b> <a href="' + document.location.origin + document.location.pathname.substring(0, document.location.pathname.lastIndexOf('/') + 1) + node.id + '" class="renderLink">' + node.id + '</a>' + '<br>' +
+                '<b>Название:</b> ' + node.name + '<br>' +
+                (node.modelShortName ? ('<b>Модель (краткое):</b> ' + node.modelShortName + '<br>') : "") +
+                (node.subCategory ? ('<b>Подкатегория:</b> ' + node.subCategory + '<br>') : "") +
+                (node.category ? ('<b>Категория:</b> ' + node.category + '<br>') : "") +
+                (node.status ? ('<b>Статус:</b> ' + node.status + '<br>') : "") +
+                (node.cost != 0 ? ('<b>Стоимость:</b> ' + node.cost + '<br>') : "") +
+                (node.location ? ('<b>Местоположение:</b> ' + node.location + '<br></font>') : "") +
+                '</div><br/>';
+
+            $('#node_description').html(description);
+        } else {
+            $('#node_description').html('');
+        }
 
         if (params.edges.length != 0) {
             if (typeof params.edges == 'object') {
@@ -136,7 +143,7 @@ function draw(data) {
                     } else {
                         linkInfo = "Связь между " + ajaxGetNode(link.resourceId).modelShortName + " и " + ajaxGetNode(link.clientId).modelShortName;
                     }
-                     
+
                     description +=
                         '<input class="hideLink" id="hd-' + link.id + '" type="checkbox">' +
                         '<label class="lab-1" for="hd-' + link.id + '">' +
@@ -148,7 +155,11 @@ function draw(data) {
                         '</div>';
                 });
                 $('#link_description').html(description);
+            } else {
+                $('#link_description').html("");
             }
+        } else {
+            $('#link_description').html("");
         }
 
         if (node.childs.length != 0) {
@@ -167,10 +178,10 @@ function draw(data) {
                     '</div>';
             });
             $('#childs_description').html(description);
-        }
+        } else {
+            $('#childs_description').html("");
+        } 
     });
-
-    
 
     network.on("doubleClick", function (params) {
         if (params.nodes.length != 0) {

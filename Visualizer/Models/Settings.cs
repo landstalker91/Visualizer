@@ -23,7 +23,6 @@ namespace Visualizer.Models
         //public static string CONNECTION_STRING = "DSN=" + DSN_NAME + ";Server=" + SERVER + ";UID=" + USER + ";PWD=" + PWD + ";Database=" + DATABASE + ";";
         public static string CONNECTION_STRING;
         public static string NODE_QUERY;
-        public static string NODE_CHILDS_QUERY;
         public static string LINK_QUERY;
         public static string NODE_LABEL_DEFAULT_COLOR;
         public static string NODE_LABEL_ROOT_COLOR;
