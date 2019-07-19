@@ -43,6 +43,8 @@ namespace Visualizer.Controllers
             try
             {
                 Node node = new Node(id, DbConnection);
+                List<Node> nodeChilds = node.getChilds(DbConnection);
+
                 return Json(new {
                     returnCode = "Success",
                     message = "Успешно",
@@ -54,7 +56,8 @@ namespace Visualizer.Controllers
                     modelShortName = node.ModelShortName,
                     modelLongName = node.ModelLongName,
                     cost = node.Cost,
-                    location = node.Location
+                    location = node.Location,
+                    childs = nodeChilds
                 });
             }
             catch (Exception ex)

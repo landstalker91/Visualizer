@@ -32,6 +32,7 @@ function ajaxGetNode(id) {
         },
         dataType: 'json'
     });
+
     return retData;
 }
 
@@ -104,54 +105,68 @@ function draw(data) {
 
     // add event listeners
     network.on('select', function (params) {
-        var linkInfo = "";
-        var linkColor = "";
-        var data = ajaxGetNode(params.nodes[0]);
+        var linkInfo = '';
+        var link = {};
+        var node = ajaxGetNode(params.nodes[0]);
         var description =
-            '<input class="hideNode" id="hd-' + data.id + '" type="checkbox">' +
-            '<label class="lab-1" for="hd-' + data.id + '" >' +
-            '<font face="Calibri"><br><font size="5"><u><b>' + data.modelLongName + '</b></u></font><br>' +
-            '</label>' +
-            '<div class="inp-1">' +
-            '<b>Название:</b> ' + data.name + '<br>' +
-            '<b>ID</b>: ' + data.id + '<br>' +
-            (data.modelShortName ? ('<b>Модель (краткое):</b> ' + data.modelShortName + '<br>') : "") +
-            (data.subCategory ? ('<b>Подкатегория:</b> ' + data.subCategory + '<br>') : "") +
-            (data.category ? ('<b>Категория:</b> ' + data.category + '<br>') : "") +
-            (data.status ? ('<b>Статус:</b> ' + data.status + '<br>') : "") +
-            (data.cost != 0 ? ('<b>Стоимость:</b> ' + data.cost + '<br>') : "") +
-            (data.location ? ('<b>Местоположение:</b> ' + data.location + '<br></font>') : "") +
-            '</div><br/>';
-              $('#node_description').html(description);
 
-        description = "";
+            '<div class="infoHeader">' + node.modelLongName + '<br></div>' +
+            '<div class="inp-1">' +
+            '<b>Ид:</b> <a href="' + document.location.origin + document.location.pathname.substring(0, document.location.pathname.lastIndexOf('/') + 1) + node.id + '" class="renderLink">' + node.id + '</a>' + '<br>' +
+            '<b>Название:</b> ' + node.name + '<br>' +
+            (node.modelShortName ? ('<b>Модель (краткое):</b> ' + node.modelShortName + '<br>') : "") +
+            (node.subCategory ? ('<b>Подкатегория:</b> ' + node.subCategory + '<br>') : "") +
+            (node.category ? ('<b>Категория:</b> ' + node.category + '<br>') : "") +
+            (node.status ? ('<b>Статус:</b> ' + node.status + '<br>') : "") +
+            (node.cost != 0 ? ('<b>Стоимость:</b> ' + node.cost + '<br>') : "") +
+            (node.location ? ('<b>Местоположение:</b> ' + node.location + '<br></font>') : "") +
+            '</div><br/>';
+
+        $('#node_description').html(description);
+
         if (params.edges.length != 0) {
             if (typeof params.edges == 'object') {
+                description = '<div class="infoHeader">Связи<br></div>';
                 params.edges.forEach(function (element) {
-                    data = ajaxGetLink(element);
-                    if (data.clientId == params.nodes[0]) {
-                        linkColor = "#54CFB7";
-                        linkInfo = "Связь с ресурсом " + ajaxGetNode(data.resourceId).modelShortName;
-                    } else if (data.resourceId == params.nodes[0]) {
-                        linkColor = "#8DC8DD";
-                        linkInfo = "Связь с клиентом " + ajaxGetNode(data.clientId).modelShortName;
+                    link = ajaxGetLink(element);
+                    if (link.clientId == params.nodes[0]) {
+                        linkInfo = "Связь с ресурсом " + ajaxGetNode(link.resourceId).modelShortName;
+                    } else if (link.resourceId == params.nodes[0]) {
+                        linkInfo = "Связь с клиентом " + ajaxGetNode(link.clientId).modelShortName;
                     } else {
-                        linkColor = "#1E90FF";
-                        linkInfo = "Связь между " + ajaxGetNode(data.resourceId).modelShortName + " и " + ajaxGetNode(data.clientId).modelShortName;
+                        linkInfo = "Связь между " + ajaxGetNode(link.resourceId).modelShortName + " и " + ajaxGetNode(link.clientId).modelShortName;
                     }
                      
                     description +=
-                        '<input class="hideLink" id="hd-' + data.id + '" type="checkbox">' +
-                        '<label class="lab-1" for="hd-' + data.id + '">' +
+                        '<input class="hideLink" id="hd-' + link.id + '" type="checkbox">' +
+                        '<label class="lab-1" for="hd-' + link.id + '">' +
                         '<br><b><u><font face="Calibri"><font size="4">' + linkInfo + '</font></b></u><br>' +
                         '</label>' +
                         '<div class="inp-1">' +
-                        '<b>Вес:</b> ' + data.weight + '%<br>' +
-                        '<b>Тип:</b> ' + data.type + '<font color="' + data.color + '"> •</font>  <br></font>' +
+                        '<b>Вес:</b> ' + link.weight + '%<br>' +
+                        '<b>Тип:</b> ' + link.type + '<font color="' + link.color + '"> •</font>  <br></font>' +
                         '</div>';
                 });
                 $('#link_description').html(description);
             }
+        }
+
+        if (node.childs.length != 0) {
+            description = '<div class="infoHeader">Состав<br></div>';
+            node.childs.forEach(function (element) {
+
+                description +=
+                    '<input class="hideChild" id="hd-' + element.id + '" type="checkbox">' +
+                    '<label class="lab-1" for="hd-' + element.id + '">' +
+                    '<br><b><u><font face="Calibri"><font size="4">' + (element.name ? element.name : element.modelLongName) + '</font></b></u><br>' +
+                    '</label>' +
+                    '<div class="inp-1">' +
+                    '<b>Ид:</b> <a href="' + document.location.origin + document.location.pathname.substring(0, document.location.pathname.lastIndexOf('/') + 1) + element.id + '" class="renderLink">' + element.id + '</a><br>' +
+                    (element.modelShortName ? ('<b>Модель (краткое):</b> ' + element.modelShortName + '<br>') : "") +
+                    (element.category ? ('<b>Категория:</b> ' + element.category + '<br>') : "") +
+                    '</div>';
+            });
+            $('#childs_description').html(description);
         }
     });
 
@@ -166,8 +181,10 @@ function draw(data) {
     network.on("click", function (params) {
         if (params.nodes.length == 0) {
             document.getElementById('node_description').style.display = 'none';
+            document.getElementById('childs_description').style.display = 'none';
         } else {
             document.getElementById('node_description').style.display = 'block';
+            document.getElementById('childs_description').style.display = 'block';
         }
 
         if (params.edges.length == 0) {
@@ -176,7 +193,7 @@ function draw(data) {
             document.getElementById('link_description').style.display = 'block';
         }
 
-        if (params.edges.length == 0 || params.edges.length == 0) {
+        if (params.nodes.length == 0 && params.edges.length == 0) {
             document.getElementById('ig_infopanel').style.display = 'none';
         } else {
             document.getElementById('ig_infopanel').style.display = 'block';

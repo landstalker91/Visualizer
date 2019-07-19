@@ -1,6 +1,7 @@
 ﻿body {
-    font: 12pt sans;
+    font: 12pt;
     background-color: #DBEDFA;
+    font-family: Calibri;
 }
 
 .inline-panel {
@@ -45,10 +46,33 @@
 .inp-1 {
     width: 90%;
     border-radius: 5px;
+    margin-top: 20px;
 }
 
 .lab-1 {
     width: 100%;
+}
+
+.infoHeader {
+    color: #1E90FF;
+    margin: 0;
+    padding: 0;
+    cursor: pointer;
+    display: inline-block;
+    font-family: Calibri;
+    font-size: 22px;
+    font-style: normal;
+    text-decoration: underline;
+    font-weight: bold;
+}
+
+.renderLink:link, .renderLink:visited, .renderLink:active {
+    font: 12pt sans;
+    text-decoration: none;
+}
+.renderLink:hover {
+    font: 12pt sans;
+    text-decoration: underline;
 }
 
 #ig_infopanel {
@@ -88,13 +112,13 @@
 }
 
 /* скрываем чекбоксы и блоки с содержанием */
-.hideNode, .hideLink,
-.hideLink + label ~ div {
+.hideLink, .hideChild,
+.hideLink + label ~ div, .hideChild + label ~ div {
     display: none;
 }
 
 /* вид текста label */
-.hideNode + label, .hideLink + label {
+.hideLink + label, .hideChild + label {
     margin: 0;
     padding: 0;
     cursor: pointer;
@@ -102,21 +126,21 @@
 }
 
 .hideLink + label {
-    color: #788d96;
+    color: #0b6e98;
 }
 
-.hideNode + label {
-    color: #1E90FF;
+.hideChild + label {
+    color: #477b7b;
 }
 
 /* вид текста label при активном переключателе */
-.hideLink:checked + label {
+.hideLink:checked + label, .hideChild:checked + label {
     color: red;
     border-bottom: 0;
 }
 
 /* когда чекбокс активен показываем блоки с содержанием  */
-.hideNode + label + div, .hideLink:checked + label + div {
+.inp-1, .hideLink:checked + label + div, .hideChild:checked + label + div {
     display: block;
     background: #fafafa;
     /*-moz-box-shadow: inset 3px 3px 10px #7d8e8f;*/
@@ -130,7 +154,7 @@
     animation: fade ease-in 0.5s;
 }
 
-.hideLink + label:before {
+.hideLink + label:before, .hideChild + label:before {
     background-color: #1e90ff;
     color: #fff;
     content: "\002B";
@@ -140,7 +164,7 @@
     font-weight: bold;
     height: 16px;
     line-height: 16px;
-    margin: 20px 3px;
+    margin: 18px 3px;
     text-align: center;
     width: 16px;
     -webkit-border-radius: 50%;
@@ -148,9 +172,9 @@
     border-radius: 50%;
 }
 
-    .hideLink:checked + label:before {
-        content: "\2212";
-    }
+.hideLink:checked + label:before, .hideChild:checked {
+    content: "\2212";
+}
 
 /* анимация при появлении скрытых блоков */
 @-moz-keyframes fade {

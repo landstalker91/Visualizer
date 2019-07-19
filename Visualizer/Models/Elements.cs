@@ -67,7 +67,49 @@ namespace Visualizer.Models
 
             LabelColor = Settings.NODE_LABEL_DEFAULT_COLOR;
         }
- 
+
+        public List<Node> getChilds(OdbcConnection DbConnection)
+        {
+            List<Node> result = new List<Node>();
+            List<int> relatedIds = new List<int>();
+
+            DbConnection.Open();
+            OdbcCommand DbCommand = DbConnection.CreateCommand();
+
+            DbCommand.CommandText =
+                " SELECT P." + Settings.NODE_PK +
+                " FROM " + Settings.NODE_TABLE_NAME + " P" +
+                " WHERE P.lParentId = " + Id;
+
+            OdbcDataReader DbReader = DbCommand.ExecuteReader();
+
+            if (DbReader.HasRows)
+            {
+                while (DbReader.Read())
+                {
+                    relatedIds.Add(DbReader.GetInt32(0));
+                }
+            }
+            else
+            {
+                Console.WriteLine("No rows found.");
+            }
+
+            DbReader.Close();
+            DbConnection.Close();
+
+            foreach (int id in relatedIds)
+            {
+                Node node = new Node(id, DbConnection);
+                if (!result.Contains(node))
+                {
+                    result.Add(node);
+                }
+            }
+
+            return result;
+        }
+
         public int Id { get; set; }
         public string Name { get; set; }
         public string Category { get; set; }
@@ -79,7 +121,6 @@ namespace Visualizer.Models
         public double Cost { get; set; }
         public string Location { get; set; }
         public string Status { get; set; }
-
     }
 
     public class Link
