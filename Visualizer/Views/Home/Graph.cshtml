@@ -21,7 +21,7 @@
         nodes = [];
         edges = [];
         var DIR = @("/" + Settings.IMAGE_PATH + "/");
-        
+
         @foreach (Node elem in ViewBag.network.Nodes)
         {
             <text> nodes.push(
@@ -58,6 +58,7 @@
     }
     </script>
 
+    <link rel="SHORTCUT ICON" href="~/favicon.ico" />
     <link href="~/css/vis-network.css" rel="stylesheet" type="text/css">
     <link href="~/lib/vis-4.21.0/dist/vis-network.min.css" rel="stylesheet" type="text/css">
     <script src="~/js/renderGraph.js"></script>
@@ -68,20 +69,23 @@
 <body onload="init()">
     
     <div class="inline-panel">
-
+        
         <div id="ig_canvas" class="inline-element" style="width: 68%">
+
             <div id="mynetwork">
                 <div class="vis-network" tabindex="900">
                     <canvas width="1900" class="vis-canvas" height="1900"></canvas>
                 </div>
                 <div class="vis-tooltip">Popup message</div>
             </div>
+            <div id="about">Визуализатор СРМ v1.0. Made by Артём Харченков.</div>
             <div id="buttonspanel">
                 <input type="button" id="btn-UD" value="Сверху вниз">
                 <input type="button" id="btn-DU" value="Снизу вверх">
                 <input type="button" id="btn-LR" value="Слева направо">
                 <input type="button" id="btn-RL" value="Справа налево">
                 <input type="hidden" id="direction" value="UD">
+
             </div>
         </div>
 
@@ -92,6 +96,7 @@
                 <div id="childs_description"></div>
             </div>
         </div>
+
     </div>
 
     <script type="text/javascript" src="~/js/addDirections.js"></script>

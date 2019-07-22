@@ -102,6 +102,14 @@
     text-align: center;
 }
 
+#about {
+    text-align: right;
+    font-size: 10px;
+    color: #0b6e98;
+    margin-right: 20px;
+    margin-top: 5px;
+}
+
 #description {
     overflow-y: hidden;
     text-overflow: ellipsis;
