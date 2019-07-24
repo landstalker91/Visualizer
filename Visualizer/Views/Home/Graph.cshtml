@@ -1,6 +1,7 @@
 ﻿
 @{
     Layout = null;
+    
 }
 
 <h2></h2>
@@ -12,8 +13,9 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="">
-    <meta name="author" content="">
-    <title>Визуализатор</title>
+    <meta name="author" content="Харченков А.А.">
+    <link rel="shortcut icon" type="image/x-icon" href="~/icons/favicon.ico">
+    <title>Визуализатор СРМ</title>
 
     <script type="text/javascript">
 
@@ -58,7 +60,6 @@
     }
     </script>
 
-    <link rel="SHORTCUT ICON" href="~/favicon.ico" />
     <link href="~/css/vis-network.css" rel="stylesheet" type="text/css">
     <link href="~/lib/vis-4.21.0/dist/vis-network.min.css" rel="stylesheet" type="text/css">
     <script src="~/js/renderGraph.js"></script>
@@ -67,11 +68,9 @@
 
 </head>
 <body onload="init()">
-    
-    <div class="inline-panel">
-        
-        <div id="ig_canvas" class="inline-element" style="width: 68%">
 
+    <div class="inline-panel">
+        <div id="ig_canvas" class="inline-element" style="width: 68%">
             <div id="mynetwork">
                 <div class="vis-network" tabindex="900">
                     <canvas width="1900" class="vis-canvas" height="1900"></canvas>
@@ -85,7 +84,6 @@
                 <input type="button" id="btn-LR" value="Слева направо">
                 <input type="button" id="btn-RL" value="Справа налево">
                 <input type="hidden" id="direction" value="UD">
-
             </div>
         </div>
 
@@ -100,5 +98,6 @@
     </div>
 
     <script type="text/javascript" src="~/js/addDirections.js"></script>
+    
 </body>
 </html>
